@@ -38,3 +38,90 @@ sum(caschool$str <= 20)
 sum(caschool$str <= 20)/420
 ```
 
+```{r}
+mean(caschool$math_scr[caschool$str<=20])
+```
+```{r}
+##Classes greater than 20 students
+sum(caschool$str > 20)
+sum(caschool$str > 20)/420
+mean(caschool$math_scr[caschool$str>20])
+```
+```{r}
+## z-test from Discussion
+
+my_z_test <- function(x, y = NULL, 
+                      mu = 0,
+                      alternative = c("not equal", "less", "greater")) {
+  # First, we check whether a one- or two-sample test should be calculated.
+  calc_two_sample <- !is.null(y)
+  
+  # Second, we calculate the test statistic for our test. Notice that x_bar and
+  #     sigma_x need to be calculated in any case, but that we only need to 
+  #     calculate the equivalents for y for the two-sample test.
+  x_bar <- mean(x)
+  sigma_x <- sd(x)
+  n_x <- length(x)
+  if (calc_two_sample == FALSE) {
+    # Calculate one-sample test statistic
+    test_stat <- sqrt(n_x) * (x_bar - mu) / sigma_x 
+  } else {
+    # Calculate two-sample test statistic
+    y_bar <- mean(y)
+    sigma_y <- sd(y)
+    n_y <- length(y)
+    test_stat <- (x_bar - y_bar - mu) / sqrt(sigma_x^2/n_x + sigma_y^2/n_y)
+  }#IFELSE
+  
+  # Finally, given our test statistic, we calculate the p-value of the test.
+  #    This crucially depends on the alternative hypothesis.
+  if (alternative[1] == "not equal") {
+    # Two-sided test
+    p_value <- 2 * pnorm(-abs(test_stat), mean = 0, sd = 1)
+  } else if (alternative[1] == "less") {
+    # One-sided test 
+    p_value <- pnorm(test_stat, mean = 0, sd = 1)
+  } else if (alternative[1] == "greater") {
+    # One-sided test 
+    p_value <- pnorm(-test_stat, mean = 0, sd = 1)
+  } else {
+    # Print an error if the alternative hypothesis does not math one of the 
+    #     three values.
+    stop("Please specify a valid alternative hypothesis.")
+  }#IFELSE
+  
+  # Return the p-value
+  return(p_value)
+}#MY_Z_TEST
+
+```
+
+
+
+```{r}
+# define both variables from the test outlined in the pset :
+## H_0: E[ math_scr | str > 20] = E[ math_scr | str <= 20]
+## H_1: E[ math_scr | str > 20] \neq E[ math_scr | str <= 20]
+
+x <- caschool$math_scr[caschool$str<=20]
+y <- caschool$math_scr[caschool$str>20]
+
+my_z_test(x = x, y = y, mu = 0, alternative = "not equal") 
+
+```
+
+Covariances:
+> duration = faithful$eruptions   # eruption durations 
+> waiting = faithful$waiting      # the waiting period 
+> cov(duration, waiting)          # apply the cov function 
+[1] 13.978
+
+the above is from the internet, the assignment asks for: covariance between avg inc and math score. as well as income and math score. 
+
+```{r}
+cov(caschool$avginc, mean(caschool$math_scr))
+cov(caschool$income, mean(caschool$math_scr))
+```
+
+
+
