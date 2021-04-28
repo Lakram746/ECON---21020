@@ -17,4 +17,24 @@ caschool %>%
 
 ```
 
+```{r}
+mean(caschool$avginc)
+sd(caschool$avginc)
+```
+
+```{r}
+mean(caschool$income)
+sd(caschool$income)
+```
+
+
+
+```{r}
+mean(caschool$math_scr)
+```
+
+```{r}
+sum(caschool$str <= 20)
+sum(caschool$str <= 20)/420
+```
 
